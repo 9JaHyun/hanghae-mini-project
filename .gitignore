@@ -1,0 +1,10 @@
+.gradle/
+.idea/
+gradle/
+gradlew
+gradlew.bat
+HELP.md
+settings.gradle
+
+# hiding application.yaml
+src/main/resources/application-**.yaml
