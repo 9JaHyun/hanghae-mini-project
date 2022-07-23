@@ -5,6 +5,8 @@ gradlew
 gradlew.bat
 HELP.md
 settings.gradle
+build/
+out/
 
 # hiding application.yaml
 !src/main/resources/application-DEV.yaml
