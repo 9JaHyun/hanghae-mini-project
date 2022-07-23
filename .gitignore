@@ -12,3 +12,4 @@ out/
 
 # exclude dev file
 !src/main/resources/application-DEV.yaml
+src/main/resources/application-**.yaml

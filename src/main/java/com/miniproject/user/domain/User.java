@@ -34,7 +34,7 @@ public class User {
     @Column(nullable = false, unique = true) private String username;
     @Column(nullable = false) private String password;
     @Column(nullable = false, unique = true) private String nickname;
-    @Column(nullable = false) private String profile;
+    private String profile;
 
     @Column(updatable = false) @CreatedDate private LocalDateTime createdAt;
     @Column(updatable = false) @CreatedBy private String createdBy;
