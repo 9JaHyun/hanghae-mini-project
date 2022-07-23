@@ -7,4 +7,4 @@ HELP.md
 settings.gradle
 
 # hiding application.yaml
-src/main/resources/application-**.yaml
+!src/main/resources/application-DEV.yaml
