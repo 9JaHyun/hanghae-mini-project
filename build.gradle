@@ -24,6 +24,9 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-validation'
     compileOnly 'org.projectlombok:lombok'
 
+    // Java Email
+    implementation group: 'javax.mail', name: 'mail', version: '1.4.7'
+
     // Database정
     runtimeOnly 'com.h2database:h2'
 //    runtimeOnly 'mysql:mysql-connector-java'
