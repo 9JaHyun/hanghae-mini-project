@@ -9,4 +9,6 @@ build/
 out/
 
 # hiding application.yaml
+
+# exclude dev file
 !src/main/resources/application-DEV.yaml
