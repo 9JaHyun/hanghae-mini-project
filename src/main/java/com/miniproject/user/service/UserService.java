@@ -12,6 +12,7 @@ import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Pattern;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,28 +23,30 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final EmailUtil emailUtil;
+    private final PasswordEncoder passwordEncoder;
     private Map<String, String> codeStorage = new ConcurrentHashMap();
     private static final Pattern PASSWORD_PATTERN = Pattern.compile(
           "^(?=.*[A-Za-z])(?=.*\\d)(?=.*[$@$!%*#?&])[A-Za-z\\d$@$!%*#?&]{8,}$");
 
-    public UserService(UserRepository userRepository, EmailUtil emailUtil) {
+    public UserService(UserRepository userRepository, EmailUtil emailUtil,
+          PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.emailUtil = emailUtil;
+        this.passwordEncoder = passwordEncoder;
     }
     @Transactional
     public void signUp(SignUpRequestDto dto) {
         validateUsername(dto);
         validatePassword(dto);
         validateDuplicateNickname(dto);
-
-        userRepository.save(dto.toEntity());
+        User user = dto.toEntity();
+        user.setPassword(passwordEncoder.encode(dto.getPassword()));
+        userRepository.save(user);
     }
 
     public void requestCertificationCode(String email) {
         String certificationCode = UUID.randomUUID().toString().substring(0, 8);
-        log.info(certificationCode);
         codeStorage.put(email, certificationCode);
-        log.info("certification code: {}", certificationCode);
         emailUtil.sendEmail(email, new SignUpEmail(certificationCode));
     }
 
