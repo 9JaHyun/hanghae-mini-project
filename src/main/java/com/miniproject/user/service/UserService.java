@@ -3,15 +3,17 @@ package com.miniproject.user.service;
 import com.miniproject.email.EmailUtil;
 import com.miniproject.email.SignUpEmail;
 import com.miniproject.user.domain.User;
-import com.miniproject.user.dto.CertificationCodeDto;
+import com.miniproject.user.domain.UserStatus;
 import com.miniproject.user.dto.SignUpRequestDto;
 import com.miniproject.user.repository.UserRepository;
-import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,15 +23,18 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional(readOnly = true)
 public class UserService {
 
+    private final RedisTemplate<String, Object> redisTemplate;
     private final UserRepository userRepository;
     private final EmailUtil emailUtil;
     private final PasswordEncoder passwordEncoder;
-    private Map<String, String> codeStorage = new ConcurrentHashMap();
+    @Value("${email.expired-time}") private String emailExpiredTime;
     private static final Pattern PASSWORD_PATTERN = Pattern.compile(
           "^(?=.*[A-Za-z])(?=.*\\d)(?=.*[$@$!%*#?&])[A-Za-z\\d$@$!%*#?&]{8,}$");
 
-    public UserService(UserRepository userRepository, EmailUtil emailUtil,
+
+    public UserService(RedisTemplate<String, Object> redisTemplate, UserRepository userRepository, EmailUtil emailUtil,
           PasswordEncoder passwordEncoder) {
+        this.redisTemplate = redisTemplate;
         this.userRepository = userRepository;
         this.emailUtil = emailUtil;
         this.passwordEncoder = passwordEncoder;
@@ -44,18 +49,24 @@ public class UserService {
         userRepository.save(user);
     }
 
-    public void requestCertificationCode(String email) {
-        String certificationCode = UUID.randomUUID().toString().substring(0, 8);
-        codeStorage.put(email, certificationCode);
-        emailUtil.sendEmail(email, new SignUpEmail(certificationCode));
+    public void createCertificationCode(String email, String url) {
+        String certificationCode = UUID.randomUUID().toString();
+        log.info(url);
+        emailUtil.sendEmail(email, new SignUpEmail(certificationCode, url, email, certificationCode));
+
+        redisTemplate.opsForValue().set(email, certificationCode);
+        redisTemplate.expire(email, Long.parseLong(emailExpiredTime), TimeUnit.MILLISECONDS);
     }
 
-    public void checkCertificationCode(CertificationCodeDto dto) {
-        if (!codeStorage.get(dto.getEmail()).equals(dto.getCode())) {
-            codeStorage.remove(dto.getEmail());
-            throw new IllegalArgumentException("인증번호가 일치하지 않습니다.");
+    public void verityEmail(String email, String authKey) {
+        String keyInRedis = (String) redisTemplate.opsForValue().get(email);
+        if (!(keyInRedis != null && keyInRedis.equals(authKey))) {
+            throw new IllegalArgumentException("만료되었거나 유효하지 않는 인증 링크입니다.");
         }
-        codeStorage.remove(dto.getEmail());
+        User user = userRepository.findByUsername(email)
+              .orElseThrow(() -> new UsernameNotFoundException("없는 회원입니다."));
+
+        user.changeStatus(UserStatus.VALID);
     }
 
     private void validateUsername(SignUpRequestDto dto) {
@@ -80,4 +91,6 @@ public class UserService {
             throw new IllegalArgumentException("중복되는 닉네임입니다.");
         }
     }
+
+
 }
