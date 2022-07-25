@@ -1,4 +1,4 @@
-package com.miniproject.config.security;
+package com.miniproject.config.security.domain;
 
 import java.util.Collection;
 import lombok.Getter;

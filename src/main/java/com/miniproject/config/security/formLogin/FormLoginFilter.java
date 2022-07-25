@@ -1,9 +1,7 @@
 package com.miniproject.config.security.formLogin;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.miniproject.config.security.RefreshTokenRepository;
-import com.miniproject.config.security.UserDetailsImpl;
-import com.miniproject.config.security.domain.RefreshToken;
+import com.miniproject.config.security.domain.UserDetailsImpl;
 import com.miniproject.config.security.jwt.JWTUtil;
 import com.miniproject.user.dto.LoginRequestDto;
 import java.io.IOException;
@@ -22,14 +20,11 @@ import org.springframework.transaction.annotation.Transactional;
 public class FormLoginFilter extends UsernamePasswordAuthenticationFilter {
 
     private final JWTUtil jwtUtil;
-    private final RefreshTokenRepository refreshTokenRepository;
     private ObjectMapper objectMapper = new ObjectMapper();
 
-    public FormLoginFilter(AuthenticationManager authenticationManager, JWTUtil jwtUtil,
-          RefreshTokenRepository refreshTokenRepository) {
+    public FormLoginFilter(AuthenticationManager authenticationManager, JWTUtil jwtUtil) {
         super(authenticationManager);
         this.jwtUtil = jwtUtil;
-        this.refreshTokenRepository = refreshTokenRepository;
     }
 
     @Override
@@ -56,11 +51,8 @@ public class FormLoginFilter extends UsernamePasswordAuthenticationFilter {
         UserDetailsImpl userDetails = (UserDetailsImpl) authResult.getPrincipal();
 
         response.setHeader(HttpHeaders.AUTHORIZATION,
-              "access_token " + jwtUtil.issueAccessToken(userDetails.getUsername()));
+              "Bearer " + jwtUtil.issueAccessToken(userDetails.getUsername()));
         String refreshToken = jwtUtil.issueRefreshToken(userDetails.getUsername());
-        response.setHeader("refresh_token", refreshToken);
-
-        RefreshToken refreshTokenEntity = RefreshToken.createToken(userDetails.getUsername(), refreshToken);
-        refreshTokenRepository.save(refreshTokenEntity);
+        response.setHeader("refresh_token", "Bearer " + refreshToken);
     }
 }

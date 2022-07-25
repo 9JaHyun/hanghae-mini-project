@@ -1,5 +1,6 @@
-package com.miniproject.config.security;
+package com.miniproject.config.security.formLogin;
 
+import com.miniproject.config.security.domain.UserDetailsImpl;
 import com.miniproject.user.domain.User;
 import com.miniproject.user.repository.UserRepository;
 import org.springframework.security.core.userdetails.UserDetails;

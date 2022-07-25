@@ -46,9 +46,7 @@ public class UserService {
 
     public void requestCertificationCode(String email) {
         String certificationCode = UUID.randomUUID().toString().substring(0, 8);
-        log.info(certificationCode);
         codeStorage.put(email, certificationCode);
-        log.info("certification code: {}", certificationCode);
         emailUtil.sendEmail(email, new SignUpEmail(certificationCode));
     }
 

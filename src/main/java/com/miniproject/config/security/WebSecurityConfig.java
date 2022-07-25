@@ -2,6 +2,7 @@ package com.miniproject.config.security;
 
 import com.miniproject.config.security.formLogin.FormLoginFilter;
 import com.miniproject.config.security.formLogin.FormLoginProvider;
+import com.miniproject.config.security.formLogin.LoginService;
 import com.miniproject.config.security.jwt.JWTUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
@@ -45,10 +46,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        FormLoginFilter formLoginFilter = new FormLoginFilter(authenticationManager(), jwtUtil,
-              refreshTokenRepository);
-        JwtCheckFilter jwtCheckFilter = new JwtCheckFilter(authenticationManager(), loginService,
-              jwtUtil);
+        FormLoginFilter formLoginFilter = new FormLoginFilter(authenticationManager(), jwtUtil);
+        JwtCheckFilter jwtCheckFilter = new JwtCheckFilter(authenticationManager(), loginService, jwtUtil);
         http.csrf().disable();
         http
               .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
