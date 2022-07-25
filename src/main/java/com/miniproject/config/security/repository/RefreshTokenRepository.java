@@ -1,4 +1,4 @@
-package com.miniproject.config.security;
+package com.miniproject.config.security.repository;
 
 import com.miniproject.config.security.domain.RefreshToken;
 import java.util.Optional;
