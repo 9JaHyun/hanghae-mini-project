@@ -1,9 +1,9 @@
 package com.miniproject.user.controller;
 
 import com.miniproject.config.security.jwt.JWTUtil;
-import com.miniproject.user.dto.CertificationCodeDto;
 import com.miniproject.user.dto.SignUpRequestDto;
 import com.miniproject.user.service.UserService;
+import javax.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpStatus;
@@ -31,26 +31,19 @@ public class UserController {
     }
 
     @PostMapping("/signup")
-    public ResponseEntity<String> signUp(@RequestBody SignUpRequestDto dto) {
+    public ResponseEntity<String> signUp(HttpServletRequest request, @RequestBody SignUpRequestDto dto) {
         userService.signUp(dto);
+        userService.createCertificationCode(dto.getUsername(), request.getRequestURL().toString().replace(request.getRequestURI(), ""));
         return ResponseEntity
               .status(HttpStatus.CREATED)
               .body("회원가입 완료!");
     }
 
     @GetMapping("/certification")
-    public ResponseEntity<String> requestCode(String email) {
-        userService.requestCertificationCode(email);
+    public ResponseEntity<String> requestCode(String email, String authKey) {
+        userService.verityEmail(email, authKey);
         return ResponseEntity
               .status(HttpStatus.OK)
-              .body("이메일 전송 완료!");
-    }
-
-    @PostMapping("/certification")
-    public ResponseEntity<String> certification(@RequestBody CertificationCodeDto dto) {
-        userService.checkCertificationCode(dto);
-        return ResponseEntity
-              .status(HttpStatus.OK)
-              .body("인증 완료!!");
+              .body("인증 완료!");
     }
 }

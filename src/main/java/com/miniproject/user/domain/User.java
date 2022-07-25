@@ -5,6 +5,8 @@ import java.time.LocalDateTime;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -37,6 +39,10 @@ public class User {
     @Column(nullable = false, unique = true) private String nickname;
     private String profile;
 
+    @Enumerated(value = EnumType.STRING)
+    @Column(nullable = false)
+    private UserStatus userStatus;
+
     @Column(updatable = false) @CreatedDate private LocalDateTime createdAt;
     @Column(updatable = false) @CreatedBy private String createdBy;
     @Column(insertable = false) @LastModifiedDate private LocalDateTime updatedAt;
@@ -50,6 +56,11 @@ public class User {
         this.password = password;
         this.nickname = nickname;
         this.profile = profile;
+        this.userStatus = UserStatus.NOT_VALID;
+    }
+
+    public void changeStatus(UserStatus userStatus) {
+        this.userStatus = userStatus;
     }
 
 }

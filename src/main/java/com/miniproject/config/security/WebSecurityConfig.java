@@ -7,6 +7,7 @@ import com.miniproject.config.security.handler.CustomLogoutSuccessHandler;
 import com.miniproject.config.security.handler.RedisLogoutHandler;
 import com.miniproject.config.security.jwt.JWTUtil;
 import com.miniproject.config.security.jwt.JwtCheckFilter;
+import com.miniproject.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
@@ -30,7 +31,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final RedisTemplate<String, Object> redisTemplate;
     private final LoginService loginService;
-//    private final JWTUtil h2JwtUtil;
+    private final UserRepository userRepository;
     private final JWTUtil redisJwtUtil;
 
     @Bean
@@ -63,7 +64,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
               .authorizeRequests(request ->
                     request
                           .antMatchers("/").permitAll()
-                          .antMatchers("/user/login", "/user/signup").anonymous()
+                          .antMatchers("/user/login", "/user/signup", "/user/certification").anonymous()
                           .anyRequest().authenticated())
               .addFilterAt(formLoginFilter, UsernamePasswordAuthenticationFilter.class)
               .addFilterAt(jwtCheckFilter, BasicAuthenticationFilter.class);
@@ -75,7 +76,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Bean
     public FormLoginProvider formLoginProvider() {
-        return new FormLoginProvider(loginService, passwordEncoder());
+        return new FormLoginProvider(loginService, userRepository, passwordEncoder());
     }
 
     @Bean
