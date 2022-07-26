@@ -11,7 +11,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -47,12 +46,12 @@ public class JwtCheckFilter extends BasicAuthenticationFilter {
 
         VerifyResult verifyResult = jwtUtil.verifyToken(accessToken);
         if (verifyResult.getTokenStatus() == TokenStatus.ACCESS) {
-            ValueOperations<String, Object> operations = redisTemplate.opsForValue();
-            if (operations.get(accessToken) != null && (boolean) operations.get(accessToken)) {
-                log.info("invalid token! (blacklist token)");
-                chain.doFilter(request, response);
-                return;
-            }
+//            ValueOperations<String, Object> operations = redisTemplate.opsForValue();
+//            if (operations.get(accessToken) != null && (boolean) operations.get(accessToken)) {
+//                log.info("invalid token! (blacklist token)");
+//                chain.doFilter(request, response);
+//                return;
+//            }
             UserDetailsImpl userDetails = (UserDetailsImpl) loginService.loadUserByUsername(verifyResult.getUsername());
 
             UsernamePasswordAuthenticationToken resultToken = new UsernamePasswordAuthenticationToken(
