@@ -1,4 +1,4 @@
-package com.miniproject.Comment.Dto;
+package com.miniproject.comment.dto;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;

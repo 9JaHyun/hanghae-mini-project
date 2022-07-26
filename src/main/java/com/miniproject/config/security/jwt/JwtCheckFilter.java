@@ -14,6 +14,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 
@@ -54,8 +55,8 @@ public class JwtCheckFilter extends BasicAuthenticationFilter {
             }
             UserDetailsImpl userDetails = (UserDetailsImpl) loginService.loadUserByUsername(verifyResult.getUsername());
 
-            JwtToken resultToken = new JwtToken(userDetails.getAuthorities(),
-                  userDetails.getUsername(), userDetails.getPassword(), true);
+            UsernamePasswordAuthenticationToken resultToken = new UsernamePasswordAuthenticationToken(
+                  userDetails, null, userDetails.getAuthorities());
 
             SecurityContextHolder.getContext().setAuthentication(resultToken);
         } else if (verifyResult.getTokenStatus() == TokenStatus.EXPIRED) {
@@ -70,8 +71,8 @@ public class JwtCheckFilter extends BasicAuthenticationFilter {
                       + jwtUtil.issueAccessToken(userDetails.getUsername()));
                 response.setHeader("refresh_token", "Bearer " + refreshToken);
 
-                JwtToken resultToken = new JwtToken(userDetails.getAuthorities(),
-                      userDetails.getUsername(), null, true);
+                UsernamePasswordAuthenticationToken resultToken = new UsernamePasswordAuthenticationToken(
+                      userDetails, null, userDetails.getAuthorities());
 
                 SecurityContextHolder.getContext().setAuthentication(resultToken);
             } else {

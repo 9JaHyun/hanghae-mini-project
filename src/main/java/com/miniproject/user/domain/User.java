@@ -1,7 +1,7 @@
 package com.miniproject.user.domain;
 
 
-import java.time.LocalDateTime;
+import com.miniproject.common.BaseEntity;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
@@ -14,10 +14,6 @@ import javax.persistence.Index;
 import javax.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.data.annotation.CreatedBy;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedBy;
-import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 @Getter
@@ -27,7 +23,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
       @Index(columnList = "nickname")
 })
 @Entity
-public class User {
+public class User extends BaseEntity {
 
 
     @Column(nullable = false, unique = true)
@@ -42,11 +38,6 @@ public class User {
     @Enumerated(value = EnumType.STRING)
     @Column(nullable = false)
     private UserStatus userStatus;
-
-    @Column(updatable = false) @CreatedDate private LocalDateTime createdAt;
-    @Column(updatable = false) @CreatedBy private String createdBy;
-    @Column(insertable = false) @LastModifiedDate private LocalDateTime updatedAt;
-    @Column(insertable = false) @LastModifiedBy private String updatedBy;
 
     protected User() {
     }

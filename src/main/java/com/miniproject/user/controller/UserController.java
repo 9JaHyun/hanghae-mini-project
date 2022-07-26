@@ -1,13 +1,12 @@
 package com.miniproject.user.controller;
 
-import com.miniproject.config.security.jwt.JWTUtil;
 import com.miniproject.user.dto.SignUpRequestDto;
 import com.miniproject.user.service.UserService;
 import javax.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -20,14 +19,9 @@ import org.springframework.web.bind.annotation.RestController;
 public class UserController {
 
     private final UserService userService;
-    private final JWTUtil jwtUtil;
-    private final RedisTemplate<String, Object> redisTemplate;
 
-
-    public UserController(UserService userService, JWTUtil jwtUtil, RedisTemplate<String, Object> redisTemplate) {
+    public UserController(UserService userService) {
         this.userService = userService;
-        this.jwtUtil = jwtUtil;
-        this.redisTemplate = redisTemplate;
     }
 
     @PostMapping("/signup")
@@ -45,5 +39,22 @@ public class UserController {
         return ResponseEntity
               .status(HttpStatus.OK)
               .body("인증 완료!");
+    }
+
+    @GetMapping("/info")
+    public String info() {
+        return SecurityContextHolder.getContext().getAuthentication().toString();
+    }
+
+    @GetMapping("/user/validateUsername")
+    public ResponseEntity<Void> validateUsername(String username) {
+        userService.validateUsername(username);
+        return ResponseEntity.ok(null);
+    }
+
+    @GetMapping("/user/nickname")
+    public ResponseEntity<Void> validateNickname(String nickname) {
+        userService.validateDuplicateNickname(nickname);
+        return ResponseEntity.ok(null);
     }
 }

@@ -1,0 +1,29 @@
+POST http://localhost:8080/user/signup
+Content-Type: application/json
+
+{
+  "username": "인증받을 수 있는 이메일을 입력하세요",
+  "password": "qwe123!!",
+  "rePassword": "qwe123!!",
+  "nickname": "테스트용"
+}
+
+###
+
+POST http://localhost:8080/login
+Content-Type: application/json
+
+{
+  "username": "인증받을 수 있는 이메일을 입력하세요",
+  "password": "qwe123!!"
+}
+###
+GET http://localhost:8080/user/info
+Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJqYWh5dW5uaW5lQGdtYWlsLmNvbSIsImV4cCI6MTY1ODgxMTM1OH0.FAWDBtc5w3OzNknMIK1WQ30hLC8EIp35uDJnmAYA6wr7zg1DEY5vIrfi1RNV0we3fOPr30PpNsMVxFXbVt3Uxg
+refresh_token: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJqYWh5dW5uaW5lQGdtYWlsLmNvbSIsImV4cCI6MTY1OTA2NDU1OH0.Nzkq01tzY5v2GTw6-jMIcKYJIq73351F52hF79jHh6DueAY0NTX7dYzH8MOFRMJcb5RFdednAXxDca8KDzRiFg
+
+###
+
+POST http://localhost:8080/logout
+Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJqYWh5dW5uaW5lQGdtYWlsLmNvbSIsImV4cCI6MTY1ODgxMDc3NX0.P9px04UVIV1HpeFIPqv5G4YjWYoPd5lzEZqvwimJNIpyM52uOTiHwima4ezsqtpiL1u9VjLNC3H8Iwo_IWt0Vw
+refresh_token: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJqYWh5dW5uaW5lQGdtYWlsLmNvbSIsImV4cCI6MTY1OTA2Mzk3NX0.tTFCqn6J8Knplfmfm1W0hfy9nqOzvdLcnzoFoQ2tKngcFl-ERE6W3Er7SdN4xKo1fI29Af1BLv-KndMAjxGDXw

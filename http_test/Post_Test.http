@@ -1,0 +1,16 @@
+POST http://localhost:8080/posts
+Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJqYWh5dW5uaW5lQGdtYWlsLmNvbSIsImV4cCI6MTY1ODgxNzQzOH0.IVLTsfE7z0SBlQdrhi2tS-kOdGscdaeMpOpulL0uZn7_g0jtpBtfqqPsr_lJV-Qbm1y4nGwUlhZ9L-VqZNbJ5A
+refresh_token: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJqYWh5dW5uaW5lQGdtYWlsLmNvbSIsImV4cCI6MTY1OTA3MDYzOH0.VqWcjmhF3U7rxns_axyI8_rH__rcz1r540M_iPq0YXuBc-vZ39ZAcWaKxduEk-LS838W1EuJ4TxIOx-IJiURfg
+Content-Type: application/json
+
+{
+  "nickname": "닉네임",
+  "contents": "게시글 내용입니다.",
+  "imageFileName": "이미지.png",
+  "lat": "111",
+  "lng": "111",
+  "address": "주소주소"
+}
+
+###
+GET http://localhost:8080/posts/1
