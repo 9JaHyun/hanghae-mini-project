@@ -1,27 +1,14 @@
-package com.miniproject.dto;
+package com.miniproject.post.dto;
 
-import lombok.*;
+import lombok.Getter;
+import lombok.ToString;
 
-import java.nio.file.Path;
-
+@ToString
 @Getter
-@Setter
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
-
 public class PostRequestDto {
-
-    private String nickname;
-
     private String contents;
-
     private String imageFileName;
-
     private String lat;
-
     private String lng;
-
     private String address;
-
 }

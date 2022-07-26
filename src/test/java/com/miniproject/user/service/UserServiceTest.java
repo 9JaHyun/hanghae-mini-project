@@ -19,7 +19,7 @@ public class UserServiceTest {
     private static Validator validator;
 
     @Autowired
-    private UserService userService;
+    private RedisUserService userService;
 
     @DisplayName(value = "회원 아이디 중복이 되어서는 안된다.")
     @Test

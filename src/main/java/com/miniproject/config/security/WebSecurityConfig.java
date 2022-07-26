@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
@@ -65,6 +66,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                     request
                           .antMatchers("/").permitAll()
                           .antMatchers("/user/login", "/user/signup", "/user/certification").anonymous()
+                          .antMatchers(HttpMethod.GET, "/posts").anonymous()
+                          .antMatchers(HttpMethod.GET, "/posts/**").anonymous()
+                          .antMatchers(HttpMethod.GET, "/posts/**/comments").anonymous()
                           .anyRequest().authenticated())
               .addFilterAt(formLoginFilter, UsernamePasswordAuthenticationFilter.class)
               .addFilterAt(jwtCheckFilter, BasicAuthenticationFilter.class);

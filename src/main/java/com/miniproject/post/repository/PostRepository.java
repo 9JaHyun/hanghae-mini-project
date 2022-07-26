@@ -1,6 +1,6 @@
-package com.miniproject.repository;
+package com.miniproject.post.repository;
 
-import com.miniproject.model.Post;
+import com.miniproject.post.model.Post;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface PostRepository extends JpaRepository<Post, Long> {

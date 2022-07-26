@@ -1,4 +1,4 @@
-package com.miniproject.Comment.Dto;
+package com.miniproject.comment.dto;
 
 
 import lombok.AllArgsConstructor;
@@ -11,10 +11,7 @@ import lombok.Setter;
 @Setter
 public class CommentRequestDto {
     private String content;
-
     public String getContent() {
         return content;
     }
-
-
 }

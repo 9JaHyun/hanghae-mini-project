@@ -1,7 +1,9 @@
-package com.miniproject.model;
+package com.miniproject.common;
 
 import lombok.Getter;
+import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
@@ -19,11 +21,8 @@ import java.time.LocalDateTime;
 @EntityListeners(AuditingEntityListener.class)
 public abstract class BaseEntity {
 
-    @Column(name = "created_date", nullable = false, updatable = false)
-    @CreatedDate // 생성일 자동 저장
-    private LocalDateTime createdDate;
-
-    @Column(name = "modified_date")
-    @LastModifiedDate // 마지막 수정시간 자동 저장
-    private LocalDateTime modifiedDate;
+    @Column(updatable = false) @CreatedDate private LocalDateTime createdAt;
+    @Column(updatable = false) @CreatedBy private String createdBy;
+    @Column(insertable = false) @LastModifiedDate private LocalDateTime updatedAt;
+    @Column(insertable = false) @LastModifiedBy private String updatedBy;
 }
