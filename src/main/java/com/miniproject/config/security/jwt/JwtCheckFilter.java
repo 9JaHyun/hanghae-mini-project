@@ -51,8 +51,8 @@ public class JwtCheckFilter extends BasicAuthenticationFilter {
         if (verifyResult.getTokenStatus() == TokenStatus.ACCESS) {
             ValueOperations<String, Object> operations = redisTemplate.opsForValue();
             if (operations.get(accessToken) != null && (boolean) operations.get(accessToken)) {
-                response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "이미 로그아웃 하셨습니다. 다시 로그인 해 주세요");
-                chain.doFilter(request, response);
+                log.info("이미 로그아웃 함!");
+                response.sendError(HttpServletResponse.SC_BAD_REQUEST, "이미 로그아웃 하셨습니다. 다시 로그인 해 주세요");
                 return;
             }
             UserDetailsImpl userDetails = (UserDetailsImpl) loginService.loadUserByUsername(verifyResult.getUsername());
