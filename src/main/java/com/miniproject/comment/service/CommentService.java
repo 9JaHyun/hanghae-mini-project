@@ -4,6 +4,7 @@ import com.miniproject.comment.domain.Comment;
 import com.miniproject.comment.dto.CommentRequestDto;
 import com.miniproject.comment.dto.CommentResponseDto;
 import com.miniproject.comment.repository.CommentRepository;
+import com.miniproject.config.security.domain.UserDetailsImpl;
 import com.miniproject.post.domain.Post;
 import com.miniproject.post.repository.PostRepository;
 import com.miniproject.user.domain.User;
@@ -39,8 +40,15 @@ public class CommentService {
     }
 
 
-    public void deleteComment(Long commentId) {
-        commentRepository.deleteById(commentId);
+    public void deleteComment(Long commentId, UserDetailsImpl userDetails) {
+        Comment comment = commentRepository.findById(commentId).orElseThrow(
+                () -> new IllegalArgumentException("해당하는 게시글을 찾을 수 없습니다."));
+
+        if(userDetails.getUser().getId().equals(comment.getUser().getId())) {
+            commentRepository.deleteById(commentId);
+        }else {
+            throw new IllegalArgumentException("댓글 삭제할 권한이 없습니다");
+        }
     }
 
 
