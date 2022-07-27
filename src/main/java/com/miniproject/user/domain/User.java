@@ -2,6 +2,7 @@ package com.miniproject.user.domain;
 
 
 import com.miniproject.common.BaseEntity;
+import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
@@ -30,9 +31,15 @@ public class User extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(nullable = false, unique = true) private String username;
-    @Setter @Column(nullable = false) private String password;
-    @Column(nullable = false, unique = true) private String nickname;
+    @Column(nullable = false, unique = true)
+    private String username;
+    @Setter
+    @Column(nullable = false)
+    private String password;
+    @Column(nullable = false, unique = true)
+    private String nickname;
+
+    @Setter
     private String profile;
 
     @Enumerated(value = EnumType.STRING)
@@ -42,11 +49,10 @@ public class User extends BaseEntity {
     protected User() {
     }
 
-    public User(String username, String password, String nickname, String profile) {
+    public User(String username, String password, String nickname) {
         this.username = username;
         this.password = password;
         this.nickname = nickname;
-        this.profile = profile;
         this.userStatus = UserStatus.NOT_VALID;
     }
 
@@ -54,4 +60,20 @@ public class User extends BaseEntity {
         this.userStatus = userStatus;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        User user = (User) o;
+        return Objects.equals(id, user.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
 }

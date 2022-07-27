@@ -1,14 +1,19 @@
 package com.miniproject.post.dto;
 
-import lombok.Getter;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.ToString;
+import org.springframework.web.multipart.MultipartFile;
 
 @ToString
-@Getter
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class PostRequestDto {
     private String contents;
-    private String imageFileName;
     private String lat;
     private String lng;
     private String address;
+    private MultipartFile data;
 }

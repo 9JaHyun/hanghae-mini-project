@@ -6,7 +6,7 @@ import com.miniproject.config.security.domain.LoginResponseDto;
 import com.miniproject.config.security.domain.TokenBox;
 import com.miniproject.config.security.domain.UserDetailsImpl;
 import com.miniproject.config.security.jwt.JWTUtil;
-import com.miniproject.user.service.UserInfoDto;
+import com.miniproject.user.dto.UserInfoDto;
 import java.io.IOException;
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -28,21 +28,20 @@ public class FormLoginFilter extends UsernamePasswordAuthenticationFilter {
     private ObjectMapper objectMapper = new ObjectMapper();
 
     public FormLoginFilter(AuthenticationManager authenticationManager, JWTUtil jwtUtil) {
-        super();
+        super(authenticationManager);
         this.jwtUtil = jwtUtil;
     }
 
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request,
           HttpServletResponse response) throws AuthenticationException {
-
         try {
-            log.info("Get Login information: ");
             LoginRequestDto loginDto = objectMapper.readValue(request.getInputStream(),
                   LoginRequestDto.class);
 
             UsernamePasswordAuthenticationToken token =
-                  new UsernamePasswordAuthenticationToken(loginDto.getUsername(), loginDto.getPassword());
+                  new UsernamePasswordAuthenticationToken(loginDto.getUsername(),
+                        loginDto.getPassword());
             return getAuthenticationManager().authenticate(token);
         } catch (IOException e) {
             throw new IllegalArgumentException("잘못된 로그인 정보입니다.");
@@ -59,7 +58,8 @@ public class FormLoginFilter extends UsernamePasswordAuthenticationFilter {
         String refreshToken = jwtUtil.issueRefreshToken(userDetails.getUsername());
 
         UserInfoDto userInfoDto = new UserInfoDto(userDetails.getUser());
-        LoginResponseDto loginResponseDto = new LoginResponseDto(new TokenBox(accessToken, refreshToken), userInfoDto);
+        LoginResponseDto loginResponseDto = new LoginResponseDto(
+              new TokenBox(accessToken, refreshToken), userInfoDto);
 
         response.getOutputStream().write(objectMapper.writeValueAsBytes(loginResponseDto));
     }

@@ -1,7 +1,7 @@
 package com.miniproject.comment.domain;
 
 import com.miniproject.common.BaseEntity;
-import com.miniproject.post.model.Post;
+import com.miniproject.post.domain.Post;
 import com.miniproject.user.domain.User;
 import javax.persistence.Column;
 import javax.persistence.Entity;

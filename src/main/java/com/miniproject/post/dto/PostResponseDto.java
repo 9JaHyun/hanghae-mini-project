@@ -1,11 +1,11 @@
 package com.miniproject.post.dto;
 
-import com.miniproject.post.model.Post;
+import com.miniproject.post.domain.Post;
 import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Getter
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class PostResponseDto {

@@ -1,6 +1,6 @@
 package com.miniproject.config.security.domain;
 
-import com.miniproject.user.service.UserInfoDto;
+import com.miniproject.user.dto.UserInfoDto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

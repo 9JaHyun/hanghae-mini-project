@@ -4,29 +4,33 @@ import com.miniproject.user.domain.User;
 import java.io.Serializable;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
-import lombok.Getter;
+import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.web.multipart.MultipartFile;
 
-@Getter
+
+@Data
 @NoArgsConstructor
+@AllArgsConstructor
 public class SignUpRequestDto implements Serializable {
 
-    @Email @NotBlank String username;
-    @NotBlank String password;
-    @NotBlank String rePassword;
-    @NotBlank String nickname;
-    String profile;
+    @Email
+    @NotBlank
+    private String username;
 
-    public SignUpRequestDto(String username, String password, String rePassword, String nickname,
-          String profile) {
-        this.username = username;
-        this.password = password;
-        this.rePassword = rePassword;
-        this.nickname = nickname;
-        this.profile = profile;
-    }
+    @NotBlank
+    private String password;
+
+    @NotBlank
+    private String rePassword;
+
+    @NotBlank
+    private String nickname;
+
+    private MultipartFile profile;
 
     public User toEntity() {
-        return new User(username, password, nickname, profile);
+        return new User(username, password, nickname);
     }
 }

@@ -4,7 +4,7 @@ import com.miniproject.comment.domain.Comment;
 import com.miniproject.comment.dto.CommentRequestDto;
 import com.miniproject.comment.dto.CommentResponseDto;
 import com.miniproject.comment.repository.CommentRepository;
-import com.miniproject.post.model.Post;
+import com.miniproject.post.domain.Post;
 import com.miniproject.post.repository.PostRepository;
 import com.miniproject.user.domain.User;
 import com.miniproject.user.repository.UserRepository;

@@ -1,4 +1,4 @@
-package com.miniproject.post.model;
+package com.miniproject.post.domain;
 
 import com.miniproject.comment.domain.Comment;
 import com.miniproject.common.BaseEntity;
@@ -64,7 +64,6 @@ public class Post extends BaseEntity {
 
     public void update(PostRequestDto requestDto) {
         this.contents = requestDto.getContents();
-        this.imageFileName = requestDto.getImageFileName();
         this.lat = requestDto.getLat();
         this.lng = requestDto.getLng();
         this.address = requestDto.getAddress();
