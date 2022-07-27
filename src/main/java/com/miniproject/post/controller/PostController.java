@@ -1,5 +1,6 @@
 package com.miniproject.post.controller;
 
+import com.miniproject.config.security.domain.UserDetailsImpl;
 import com.miniproject.post.dto.PostRequestDto;
 import com.miniproject.post.dto.PostResponseDto;
 import com.miniproject.post.service.PostService;
@@ -28,12 +29,12 @@ public class PostController {
     // 게시글 작성
     @PostMapping("/posts")
     public ResponseEntity<Void> createPost(PostRequestDto requestDto,
-          @AuthenticationPrincipal UserDetails userDetails) throws IOException {
+                                           @AuthenticationPrincipal UserDetails userDetails) throws IOException {
 
         postService.createPost(userDetails.getUsername(), requestDto);
 
         return ResponseEntity.status(HttpStatus.OK)
-              .body(null);
+                .body(null);
     }
 
     // 개별 게시글 상세 조회
@@ -42,62 +43,34 @@ public class PostController {
         PostResponseDto dto = postService.findById(id);
 
         return ResponseEntity.status(HttpStatus.OK)
-              .contentType(MediaType.APPLICATION_JSON)
-              .body(dto);
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(dto);
     }
 
     // 게시글 수정
     @PutMapping("/posts/{id}")
     public Long updatePost(@PathVariable Long id, @RequestBody PostRequestDto requestDto) {
-         return postService.updatePost(id, requestDto);
+        return postService.updatePost(id, requestDto);
     }
 
 
-    // 이미지 업로드
-//    @PostMapping("/images")
-//    public String upload(@RequestParam("images") MultipartFile multipartFile) throws IOException {
-//        s3Uploader.upload(multipartFile, "static");
-//        return "test";
-//    }
-
-    // 이미지 업로드
-//    @PostMapping("/image")
-//    public String image(@RequestParam MultipartFile file) {
-//
-//        UUID uuid = UUID.randomUUID();
-//        // .getOriginalFilename 파일이름 찾는 함수
-//        String imageFileName = uuid + "_" + file.getOriginalFilename();
-//
-//        // 사진은 하드에 저장
-//        // 파일이름은 db에 저장
-//        String path = "C:/Users/HRYUN/Desktop/항해99/week06/hanghae-mini-project/src/main/resources/static/image";
-//
-//        Path imagePath = Paths.get(path + imageFileName);
-//
-//        try {
-//            Files.write(imagePath, file.getBytes());
-//        } catch (Exception e) {
-//
-//        }
-//        return imageFileName;
-//    }
 
 
     // 게시글 삭제
-    @DeleteMapping("posts/{id}")
-    public Long deletePost(@PathVariable Long id) {
-        postService.deletePost(id);
-        return id;
-    }
+//    @DeleteMapping("posts/{id}")
+//    public Long deletePost(@PathVariable Long id) {
+//        postService.deletePost(id);
+//        return id;
+//    }
 
     // 게시글 삭제 (jwt 적용)
-//    @DeleteMapping("posts/{id}")
-//    public Long deletePost(@PathVariable Long id//, @AuthenticationPrincipal UserDetailsImpl userDetails
-//    ) {
-//        if (userDetails != null) {
-//            String username = userDetails.getUser().getUsername();
-//            String result = postService.deletePost(id);
-//            return result;
-//
-//        }
+    @DeleteMapping("posts/{id}")
+    public Long deletePost(@PathVariable Long id, @AuthenticationPrincipal UserDetailsImpl userDetails
+    ) {
+        if (userDetails != null) {
+            Long username = userDetails.getUser().getId();
+            postService.deletePost(id, username);
+        }
+        return id;
+    }
 }
