@@ -47,12 +47,12 @@ public class JwtCheckFilter extends BasicAuthenticationFilter {
 
         VerifyResult verifyResult = jwtUtil.verifyToken(accessToken);
         if (verifyResult.getTokenStatus() == TokenStatus.ACCESS) {
-            ValueOperations<String, Object> operations = redisTemplate.opsForValue();
-            if (operations.get(accessToken) != null && (boolean) operations.get(accessToken)) {
-                log.info("invalid token! (blacklist token)");
-                chain.doFilter(request, response);
-                return;
-            }
+//            ValueOperations<String, Object> operations = redisTemplate.opsForValue();
+//            if (operations.get(accessToken) != null && (boolean) operations.get(accessToken)) {
+//                log.info("invalid token! (blacklist token)");
+//                chain.doFilter(request, response);
+//                return;
+//            }
             UserDetailsImpl userDetails = (UserDetailsImpl) loginService.loadUserByUsername(verifyResult.getUsername());
 
             UsernamePasswordAuthenticationToken resultToken = new UsernamePasswordAuthenticationToken(

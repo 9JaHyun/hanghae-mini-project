@@ -69,7 +69,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                           .antMatchers(HttpMethod.GET, "/posts").anonymous()
                           .antMatchers(HttpMethod.GET, "/posts/**").anonymous()
                           .antMatchers(HttpMethod.GET, "/posts/**/comments").anonymous()
-                          .anyRequest().authenticated())
+                          .anyRequest().permitAll())
               .addFilterAt(formLoginFilter, UsernamePasswordAuthenticationFilter.class)
               .addFilterAt(jwtCheckFilter, BasicAuthenticationFilter.class);
         http
