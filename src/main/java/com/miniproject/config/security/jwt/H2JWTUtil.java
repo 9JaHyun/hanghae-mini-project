@@ -62,24 +62,7 @@ public class H2JWTUtil implements JWTUtil{
               .signWith(SignatureAlgorithm.HS512, SECRET_KEY)
               .compact());
     }
-    @Override
-    @Transactional
-    public String reIssueRefreshToken(String username, String refreshToken) {
-        RefreshToken token = refreshTokenRepository.findByUsername(username)
-              .orElseThrow(() -> new UsernameNotFoundException(
-                    username + "'s refresh token not found"));
 
-        log.info("try to reIssue token -> {}", refreshToken);
-        log.info("stored refresh token -> {}", token.getToken());
-
-        if (refreshToken.equals(token.getToken())) {
-            RefreshToken newToken = createRefreshToken(username);
-            token.changeToken(newToken.getToken());
-            return newToken.getToken();
-        } else {
-            throw new JwtException("Refresh Token does not match!");
-        }
-    }
     @Override
     public VerifyResult verifyToken(String token) {
         Claims claims;

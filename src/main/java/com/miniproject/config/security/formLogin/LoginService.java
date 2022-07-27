@@ -22,7 +22,7 @@ public class LoginService implements UserDetailsService {
         User user = userRepository.findByUsername(username)
               .orElseThrow(() -> new UsernameNotFoundException("잘못된 로그인 정보입니다."));
 
-        return new UserDetailsImpl(user.getUsername(), user.getPassword());
+        return new UserDetailsImpl(user);
     }
 
 }

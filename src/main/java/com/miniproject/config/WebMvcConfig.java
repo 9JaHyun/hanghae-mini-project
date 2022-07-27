@@ -1,6 +1,7 @@
 package com.miniproject.config;
 
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.resource.PathResourceResolver;
@@ -9,7 +10,6 @@ import org.springframework.web.servlet.resource.PathResourceResolver;
 public class WebMvcConfig implements WebMvcConfigurer {
 
     public static final String IMAGEPATH = "C:/Users/HRYUN/Desktop/항해99/week06/hanghae-mini-project/src/main/resources/static/image";
-
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
@@ -23,5 +23,16 @@ public class WebMvcConfig implements WebMvcConfigurer {
                 .setCachePeriod(60 * 10 * 6)
                 .resourceChain(true)
                 .addResolver(new PathResourceResolver());
+    }
+
+    @Override
+    public void addCorsMappings(CorsRegistry registry) {
+        registry.addMapping("/**")
+              .allowedOriginPatterns("*")
+              .allowedMethods("*")
+              .allowedHeaders("*")
+              .exposedHeaders("*")
+              .allowCredentials(true)
+              .maxAge(1600);
     }
 }
