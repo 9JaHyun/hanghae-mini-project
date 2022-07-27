@@ -1,5 +1,7 @@
 package com.miniproject.common;
 
+import java.util.TimeZone;
+import javax.annotation.PostConstruct;
 import lombok.Getter;
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
@@ -25,4 +27,9 @@ public abstract class BaseEntity {
     @Column(updatable = false) @CreatedBy private String createdBy;
     @Column(insertable = false) @LastModifiedDate private LocalDateTime updatedAt;
     @Column(insertable = false) @LastModifiedBy private String updatedBy;
+
+    @PostConstruct
+    void init() {
+        TimeZone.setDefault(TimeZone.getTimeZone("Asia/Seoul"));
+    }
 }
