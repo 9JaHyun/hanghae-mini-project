@@ -47,10 +47,11 @@ public class CommentController {
 
     //댓글 삭제
     @DeleteMapping("posts/comment/{commentId}")
-    public Long deleteComment(@PathVariable Long commentId
+    public ResponseEntity<Long> deleteComment(@PathVariable Long commentId
           , @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        commentService.deleteComment(commentId);
-        return commentId;
+        commentService.deleteComment(commentId,userDetails);
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(null);
     }
 
     @Data
