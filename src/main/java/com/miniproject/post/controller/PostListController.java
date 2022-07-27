@@ -25,7 +25,7 @@ public class PostListController {
     public static final int PageSize = 12;
 
     // 최초 메인페이지 컨트롤러
-    @GetMapping("/")
+    @GetMapping("/posts")
     // sort = "id", direction = Sort.Direction.DESC 아이디로 내림차순 정렬
     public List<PostListResponseDto> firstMainList(
             @PageableDefault(sort = "createdAt", direction = Sort.Direction.DESC, size = PageSize) Pageable pageable) {
