@@ -7,11 +7,11 @@ import com.miniproject.config.security.jwt.VerifyResult.TokenStatus;
 import java.io.IOException;
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -49,12 +49,12 @@ public class JwtCheckFilter extends BasicAuthenticationFilter {
 
         VerifyResult verifyResult = jwtUtil.verifyToken(accessToken);
         if (verifyResult.getTokenStatus() == TokenStatus.ACCESS) {
-//            ValueOperations<String, Object> operations = redisTemplate.opsForValue();
-//            if (operations.get(accessToken) != null && (boolean) operations.get(accessToken)) {
-//                log.info("invalid token! (blacklist token)");
-//                chain.doFilter(request, response);
-//                return;
-//            }
+            ValueOperations<String, Object> operations = redisTemplate.opsForValue();
+            if (operations.get(accessToken) != null && (boolean) operations.get(accessToken)) {
+                log.info("이미 로그아웃 함!");
+                response.sendError(HttpServletResponse.SC_BAD_REQUEST, "이미 로그아웃 하셨습니다. 다시 로그인 해 주세요");
+                return;
+            }
             UserDetailsImpl userDetails = (UserDetailsImpl) loginService.loadUserByUsername(verifyResult.getUsername());
 
             UsernamePasswordAuthenticationToken resultToken = new UsernamePasswordAuthenticationToken(
@@ -70,13 +70,9 @@ public class JwtCheckFilter extends BasicAuthenticationFilter {
                 UserDetailsImpl userDetails = (UserDetailsImpl) loginService.loadUserByUsername(
                       refreshTokenVerifyResult.getUsername());
                 String reIssueAccessToken = jwtUtil.issueAccessToken(userDetails.getUsername());
+                response.setStatus(HttpServletResponse.SC_CREATED);
                 response.setHeader(HttpHeaders.AUTHORIZATION, "Bearer "
                       + reIssueAccessToken);
-                response.setHeader("refresh_token", "Bearer " + refreshToken);
-
-                Cookie[] cookies = request.getCookies();
-                Cookie accessCookie = new Cookie("access_token", reIssueAccessToken);
-                response.addCookie(accessCookie);
 
                 UsernamePasswordAuthenticationToken resultToken = new UsernamePasswordAuthenticationToken(
                       userDetails, null, userDetails.getAuthorities());

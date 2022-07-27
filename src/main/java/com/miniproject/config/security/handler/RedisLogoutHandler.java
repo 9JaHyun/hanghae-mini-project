@@ -7,6 +7,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Primary;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.core.Authentication;
@@ -14,6 +15,7 @@ import org.springframework.security.web.authentication.logout.LogoutHandler;
 import org.springframework.stereotype.Component;
 
 @Slf4j
+@Primary
 @Component
 public class RedisLogoutHandler implements LogoutHandler {
 
@@ -43,6 +45,7 @@ public class RedisLogoutHandler implements LogoutHandler {
             }
         } catch (IllegalArgumentException e) {
             log.warn("user does not exist");
+            throw new IllegalArgumentException(e.getMessage());
         }
 
         //cache logout token for 10 minutes!
