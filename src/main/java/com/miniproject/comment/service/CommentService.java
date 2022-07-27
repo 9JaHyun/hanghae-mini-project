@@ -4,6 +4,7 @@ import com.miniproject.comment.domain.Comment;
 import com.miniproject.comment.dto.CommentRequestDto;
 import com.miniproject.comment.dto.CommentResponseDto;
 import com.miniproject.comment.repository.CommentRepository;
+import com.miniproject.config.security.domain.UserDetailsImpl;
 import com.miniproject.post.domain.Post;
 import com.miniproject.post.repository.PostRepository;
 import com.miniproject.user.domain.User;
@@ -39,15 +40,23 @@ public class CommentService {
     }
 
 
-    public void deleteComment(Long commentId) {
-        commentRepository.deleteById(commentId);
+    public void deleteComment(Long commentId, UserDetailsImpl userDetails) {
+
+        Comment comment = commentRepository.findById(commentId).orElseThrow(
+                () -> new IllegalArgumentException("해당 댓글이 존재하지 않습니다.")
+        );
+
+        if(userDetails.getUser().getId().equals(comment.getCommentId())) {
+            commentRepository.delete(comment);
+        }
+
     }
 
 
     public List<CommentResponseDto> listComment(Long postId) {
         List<CommentResponseDto> commentResponseDtoList = new ArrayList<>();
 
-        List<Comment> commentList = commentRepository.findAllByPostId(postId);
+        List<Comment> commentList = commentRepository.findAllByPostIdOrderByCreatedAtDesc(postId);
 
         for (Comment comment : commentList) {
             CommentResponseDto commentResponseDto = new CommentResponseDto(comment);
