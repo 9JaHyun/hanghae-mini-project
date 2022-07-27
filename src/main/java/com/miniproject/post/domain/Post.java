@@ -6,6 +6,7 @@ import com.miniproject.post.dto.PostRequestDto;
 import com.miniproject.user.domain.User;
 import java.util.ArrayList;
 import java.util.List;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
@@ -43,7 +44,7 @@ public class Post extends BaseEntity {
     @JoinColumn(name="user_id", nullable = false)
     private User user;
 
-    @OneToMany(mappedBy = "post", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "post", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Comment> comment = new ArrayList<>();
 
     @Column(nullable = false)
