@@ -1,25 +1,36 @@
 package com.miniproject.config.security.domain;
 
+import com.miniproject.user.domain.User;
 import java.util.Collection;
-import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 
-@Getter
 public class UserDetailsImpl implements UserDetails {
 
-    private String username;
-    private String password;
+    private User user;
 
-    public UserDetailsImpl(String username, String password) {
-        this.username = username;
-        this.password = password;
+    public UserDetailsImpl(User user) {
+        this.user = user;
     }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return null;
+    }
+
+    @Override
+    public String getPassword() {
+        return user.getPassword();
+    }
+
+    @Override
+    public String getUsername() {
+        return user.getUsername();
+    }
+
+    public User getUser() {
+        return user;
     }
 
     @Override

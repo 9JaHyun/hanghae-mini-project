@@ -1,10 +1,10 @@
 package com.miniproject.config.security.jwt;
 
+import com.miniproject.config.Error.ErrorCode;
 import com.miniproject.config.security.domain.UserDetailsImpl;
 import com.miniproject.config.security.formLogin.LoginService;
 import com.miniproject.config.security.jwt.VerifyResult.TokenStatus;
 import java.io.IOException;
-import javax.security.sasl.AuthenticationException;
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -17,7 +17,9 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
+import org.springframework.web.bind.annotation.CrossOrigin;
 
+@CrossOrigin
 @Slf4j
 public class JwtCheckFilter extends BasicAuthenticationFilter {
 
@@ -47,12 +49,12 @@ public class JwtCheckFilter extends BasicAuthenticationFilter {
 
         VerifyResult verifyResult = jwtUtil.verifyToken(accessToken);
         if (verifyResult.getTokenStatus() == TokenStatus.ACCESS) {
-//            ValueOperations<String, Object> operations = redisTemplate.opsForValue();
-//            if (operations.get(accessToken) != null && (boolean) operations.get(accessToken)) {
-//                log.info("invalid token! (blacklist token)");
-//                chain.doFilter(request, response);
-//                return;
-//            }
+            ValueOperations<String, Object> operations = redisTemplate.opsForValue();
+            if (operations.get(accessToken) != null && (boolean) operations.get(accessToken)) {
+                log.info("이미 로그아웃 함!");
+                response.sendError(HttpServletResponse.SC_BAD_REQUEST, "이미 로그아웃 하셨습니다. 다시 로그인 해 주세요");
+                return;
+            }
             UserDetailsImpl userDetails = (UserDetailsImpl) loginService.loadUserByUsername(verifyResult.getUsername());
 
             UsernamePasswordAuthenticationToken resultToken = new UsernamePasswordAuthenticationToken(
@@ -67,19 +69,24 @@ public class JwtCheckFilter extends BasicAuthenticationFilter {
             if (refreshTokenVerifyResult.getTokenStatus() == TokenStatus.ACCESS) {
                 UserDetailsImpl userDetails = (UserDetailsImpl) loginService.loadUserByUsername(
                       refreshTokenVerifyResult.getUsername());
+                String reIssueAccessToken = jwtUtil.issueAccessToken(userDetails.getUsername());
+                response.setStatus(HttpServletResponse.SC_CREATED);
                 response.setHeader(HttpHeaders.AUTHORIZATION, "Bearer "
-                      + jwtUtil.issueAccessToken(userDetails.getUsername()));
-                response.setHeader("refresh_token", "Bearer " + refreshToken);
+                      + reIssueAccessToken);
 
                 UsernamePasswordAuthenticationToken resultToken = new UsernamePasswordAuthenticationToken(
                       userDetails, null, userDetails.getAuthorities());
 
                 SecurityContextHolder.getContext().setAuthentication(resultToken);
             } else {
-                throw new AuthenticationException("Token is not valid");
+                log.info("Token is not valid");
+                request.setAttribute("exception", ErrorCode.EXPIRED_TOKEN);
+                chain.doFilter(request, response);
+                return;
             }
         } else {
-            log.info("no valid JWT token found. uri = {}", request.getRequestURI());
+            log.info("Token is not valid");
+            request.setAttribute("exception", ErrorCode.INVALID_TOKEN);
         }
         chain.doFilter(request, response);
     }

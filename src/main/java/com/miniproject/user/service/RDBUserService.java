@@ -20,22 +20,20 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
-@Primary
 @Service
-@Transactional(readOnly = true)
-public class H2UserService implements UserService {
+@Transactional
+public class RDBUserService implements UserService {
 
     private final EmailAuthRepository emailAuthRepository;
     private final UserRepository userRepository;
     private final EmailUtil emailUtil;
     private final PasswordEncoder passwordEncoder;
     @Value("${email.expired-time}")
-    private String emailExpiredTime;
     private static final Pattern PASSWORD_PATTERN = Pattern.compile(
           "^(?=.*[A-Za-z])(?=.*\\d)(?=.*[$@$!%*#?&])[A-Za-z\\d$@$!%*#?&]{8,}$");
 
 
-    public H2UserService(EmailAuthRepository emailAuthRepository, UserRepository userRepository,
+    public RDBUserService(EmailAuthRepository emailAuthRepository, UserRepository userRepository,
           EmailUtil emailUtil, PasswordEncoder passwordEncoder) {
         this.emailAuthRepository = emailAuthRepository;
         this.userRepository = userRepository;
@@ -55,11 +53,25 @@ public class H2UserService implements UserService {
     }
 
     @Override
+    public UserInfoDto sendUserInfo(String username) {
+        return userRepository.findByUsername(username)
+              .map(UserInfoDto::new)
+              .orElseThrow(() -> new UsernameNotFoundException("없는 회원입니다."));
+    }
+
+    @Override
+    public boolean checkValidUser(String username) {
+        User user = userRepository.findByUsername(username)
+              .orElseThrow(() -> new UsernameNotFoundException("잘못된 로그인 정보입니다."));
+
+        return user.getUserStatus() == UserStatus.VALID;
+    }
+
+    @Override
     public void createCertificationCode(String email, String url) {
         String certificationCode = UUID.randomUUID().toString();
         log.info(url);
-        emailUtil.sendEmail(email,
-              new SignUpEmail(certificationCode, url, email, certificationCode));
+        emailUtil.sendEmail(email, new SignUpEmail(certificationCode, url, email, certificationCode));
 
         EmailAuth emailAuth = new EmailAuth(email, certificationCode);
         emailAuthRepository.save(emailAuth);

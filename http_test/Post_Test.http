@@ -1,16 +1,16 @@
-POST http://localhost:8080/posts
-Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJqYWh5dW5uaW5lQGdtYWlsLmNvbSIsImV4cCI6MTY1ODgxNzQzOH0.IVLTsfE7z0SBlQdrhi2tS-kOdGscdaeMpOpulL0uZn7_g0jtpBtfqqPsr_lJV-Qbm1y4nGwUlhZ9L-VqZNbJ5A
-refresh_token: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJqYWh5dW5uaW5lQGdtYWlsLmNvbSIsImV4cCI6MTY1OTA3MDYzOH0.VqWcjmhF3U7rxns_axyI8_rH__rcz1r540M_iPq0YXuBc-vZ39ZAcWaKxduEk-LS838W1EuJ4TxIOx-IJiURfg
+POST http://13.125.106.21:8080/posts
 Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJqYWh5dW5uaW5lQGdtYWlsLmNvbSIsImV4cCI6MTY1ODkwNjIxNX0.2pumIeH7kepZ0mT_PZf8X7OUH5XANkS8z0SlADtnbAm4aghV-dmFwej8FD1ZRVgb7mQJci9Pe6klZmWnFFLzeg
+refresh_token: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJqYWh5dW5uaW5lQGdtYWlsLmNvbSIsImV4cCI6MTY1OTE1OTQxNn0.y0RaPM2TwY4Nm0QROK5U2Bwadeu3lkNnDFCDt7gKwOjXqIacLWer6y-66HUHQ15wZW4Od_1Od7jVr9x2u6BYkw
 
 {
   "nickname": "닉네임",
   "contents": "게시글 내용입니다.",
-  "imageFileName": "이미지.png",
   "lat": "111",
   "lng": "111",
+  "imageFileName": "사진사진",
   "address": "주소주소"
 }
 
 ###
-GET http://localhost:8080/posts/1
+GET http://13.125.106.21:8080/posts/1
