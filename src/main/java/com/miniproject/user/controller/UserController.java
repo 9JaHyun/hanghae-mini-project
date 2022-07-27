@@ -27,7 +27,8 @@ public class UserController {
     @PostMapping("/signup")
     public ResponseEntity<String> signUp(HttpServletRequest request, @RequestBody SignUpRequestDto dto) {
         userService.signUp(dto);
-        userService.createCertificationCode(dto.getUsername(), request.getRequestURL().toString().replace(request.getRequestURI(), ""));
+        userService.createCertificationCode(dto.getUsername(),
+              request.getRequestURL().toString().replace(request.getRequestURI(), ""));
         return ResponseEntity
               .status(HttpStatus.CREATED)
               .body("회원가입 완료!");

@@ -4,7 +4,6 @@ import com.miniproject.config.security.domain.RefreshTokenRedis;
 import com.miniproject.config.security.jwt.VerifyResult.TokenStatus;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
-import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import java.util.Date;
@@ -62,24 +61,6 @@ public class RedisJWTUtil implements JWTUtil{
                     new Date(System.currentTimeMillis() + Long.parseLong(REFRESH_EXPIRED_TIME)))
               .signWith(SignatureAlgorithm.HS512, SECRET_KEY)
               .compact());
-    }
-
-    @Override
-    @Transactional
-    public String reIssueRefreshToken(String username, String refreshToken) {
-        ValueOperations<String, Object> operations = redisTemplate.opsForValue();
-        RefreshTokenRedis token = (RefreshTokenRedis) operations.get(username);
-
-        log.info("try to reIssue token -> {}", refreshToken);
-        log.info("stored refresh token -> {}", token.getToken());
-
-        if (refreshToken.equals(token.getToken())) {
-            RefreshTokenRedis newToken = createRefreshToken(username);
-            token.changeToken(newToken.getToken());
-            return newToken.getToken();
-        } else {
-            throw new JwtException("Refresh Token does not match!");
-        }
     }
 
     @Override

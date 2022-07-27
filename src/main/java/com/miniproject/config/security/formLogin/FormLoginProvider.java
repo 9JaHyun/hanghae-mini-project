@@ -1,27 +1,24 @@
 package com.miniproject.config.security.formLogin;
 
-import com.miniproject.user.domain.User;
+import com.miniproject.config.security.domain.UserDetailsImpl;
 import com.miniproject.user.domain.UserStatus;
-import com.miniproject.user.repository.UserRepository;
+import org.springframework.security.authentication.AccountExpiredException;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.web.bind.annotation.CrossOrigin;
 
+@CrossOrigin
 public class FormLoginProvider implements AuthenticationProvider {
 
     private final LoginService loginService;
-    private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
-    public FormLoginProvider(LoginService loginService, UserRepository userRepository,
-          PasswordEncoder passwordEncoder) {
+    public FormLoginProvider(LoginService loginService, PasswordEncoder passwordEncoder) {
         this.loginService = loginService;
-        this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
     }
 
@@ -31,14 +28,11 @@ public class FormLoginProvider implements AuthenticationProvider {
         String username = (String) authentication.getPrincipal();
         String password = (String) authentication.getCredentials();
 
-        User user = userRepository.findByUsername(username)
-              .orElseThrow(() -> new UsernameNotFoundException("잘못된 로그인 정보입니다."));
+        UserDetailsImpl userDetails = (UserDetailsImpl) loginService.loadUserByUsername(username);
 
-        if (user.getUserStatus() == UserStatus.NOT_VALID) {
-            throw new IllegalStateException("인증이 완료되지 않은 계정입니다. 이메일 인증을 수행해주세요");
+        if (userDetails.getUser().getUserStatus() != UserStatus.VALID) {
+            throw new AccountExpiredException("이메일 인증을 받지 않았습니다.");
         }
-
-        UserDetails userDetails = loginService.loadUserByUsername(username);
 
         if (passwordEncoder.matches(password, userDetails.getPassword())) {
             return new UsernamePasswordAuthenticationToken(userDetails, null);

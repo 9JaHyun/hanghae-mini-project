@@ -1,12 +1,13 @@
 package com.miniproject.config.security.jwt;
 
+import com.miniproject.config.Error.ErrorCode;
 import com.miniproject.config.security.domain.UserDetailsImpl;
 import com.miniproject.config.security.formLogin.LoginService;
 import com.miniproject.config.security.jwt.VerifyResult.TokenStatus;
 import java.io.IOException;
-import javax.security.sasl.AuthenticationException;
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
@@ -16,7 +17,9 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
+import org.springframework.web.bind.annotation.CrossOrigin;
 
+@CrossOrigin
 @Slf4j
 public class JwtCheckFilter extends BasicAuthenticationFilter {
 
@@ -66,19 +69,28 @@ public class JwtCheckFilter extends BasicAuthenticationFilter {
             if (refreshTokenVerifyResult.getTokenStatus() == TokenStatus.ACCESS) {
                 UserDetailsImpl userDetails = (UserDetailsImpl) loginService.loadUserByUsername(
                       refreshTokenVerifyResult.getUsername());
+                String reIssueAccessToken = jwtUtil.issueAccessToken(userDetails.getUsername());
                 response.setHeader(HttpHeaders.AUTHORIZATION, "Bearer "
-                      + jwtUtil.issueAccessToken(userDetails.getUsername()));
+                      + reIssueAccessToken);
                 response.setHeader("refresh_token", "Bearer " + refreshToken);
+
+                Cookie[] cookies = request.getCookies();
+                Cookie accessCookie = new Cookie("access_token", reIssueAccessToken);
+                response.addCookie(accessCookie);
 
                 UsernamePasswordAuthenticationToken resultToken = new UsernamePasswordAuthenticationToken(
                       userDetails, null, userDetails.getAuthorities());
 
                 SecurityContextHolder.getContext().setAuthentication(resultToken);
             } else {
-                throw new AuthenticationException("Token is not valid");
+                log.info("Token is not valid");
+                request.setAttribute("exception", ErrorCode.EXPIRED_TOKEN);
+                chain.doFilter(request, response);
+                return;
             }
         } else {
-            log.info("no valid JWT token found. uri = {}", request.getRequestURI());
+            log.info("Token is not valid");
+            request.setAttribute("exception", ErrorCode.INVALID_TOKEN);
         }
         chain.doFilter(request, response);
     }

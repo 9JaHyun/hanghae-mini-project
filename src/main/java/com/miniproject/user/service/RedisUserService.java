@@ -51,6 +51,21 @@ public class RedisUserService implements UserService{
     }
 
     @Override
+    public UserInfoDto sendUserInfo(String username) {
+        return userRepository.findByUsername(username)
+              .map(UserInfoDto::new)
+              .orElseThrow(() -> new UsernameNotFoundException("없는 회원입니다."));
+    }
+
+    @Override
+    public boolean checkValidUser(String username) {
+        User user = userRepository.findByUsername(username)
+              .orElseThrow(() -> new UsernameNotFoundException("잘못된 로그인 정보입니다."));
+
+        return user.getUserStatus() == UserStatus.VALID;
+    }
+
+    @Override
     public void createCertificationCode(String email, String url) {
         String certificationCode = UUID.randomUUID().toString();
         log.info(url);
