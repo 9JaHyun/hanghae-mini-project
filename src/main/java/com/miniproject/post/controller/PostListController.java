@@ -28,7 +28,7 @@ public class PostListController {
     @GetMapping("/")
     // sort = "id", direction = Sort.Direction.DESC 아이디로 내림차순 정렬
     public List<PostListResponseDto> firstMainList(
-            @PageableDefault(sort = "id", direction = Sort.Direction.DESC, size = PageSize) Pageable pageable) {
+            @PageableDefault(sort = "createdAt", direction = Sort.Direction.DESC, size = PageSize) Pageable pageable) {
         // 응답 list 객체 생성
         List<PostListResponseDto> data = new ArrayList<>(); //
         Page<Post> list = postListService.firstMainList(pageable);
