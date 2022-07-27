@@ -1,8 +1,8 @@
-POST http://localhost:8080/user/signup
+POST http://13.125.106.21:8080/user/signup
 Content-Type: application/json
 
 {
-  "username": "인증받을 수 있는 이메일을 입력하세요",
+  "username": "jahyunnine@gmail.com",
   "password": "qwe123!!",
   "rePassword": "qwe123!!",
   "nickname": "테스트용"
@@ -10,20 +10,19 @@ Content-Type: application/json
 
 ###
 
-POST http://localhost:8080/login
+POST http://13.125.106.21:8080/login
 Content-Type: application/json
 
 {
-  "username": "인증받을 수 있는 이메일을 입력하세요",
+  "username": "jahyunnine@gmail.com",
   "password": "qwe123!!"
 }
 ###
-GET http://localhost:8080/user/info
-Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJqYWh5dW5uaW5lQGdtYWlsLmNvbSIsImV4cCI6MTY1ODgxMTM1OH0.FAWDBtc5w3OzNknMIK1WQ30hLC8EIp35uDJnmAYA6wr7zg1DEY5vIrfi1RNV0we3fOPr30PpNsMVxFXbVt3Uxg
-refresh_token: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJqYWh5dW5uaW5lQGdtYWlsLmNvbSIsImV4cCI6MTY1OTA2NDU1OH0.Nzkq01tzY5v2GTw6-jMIcKYJIq73351F52hF79jHh6DueAY0NTX7dYzH8MOFRMJcb5RFdednAXxDca8KDzRiFg
-
+GET http://13.125.106.21:8080/user/info
+Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJqYWh5dW5uaW5lQGdtYWlsLmNvbSIsImV4cCI6MTY1ODkwNjIxNX0.2pumIeH7kepZ0mT_PZf8X7OUH5XANkS8z0SlADtnbAm4aghV-dmFwej8FD1ZRVgb7mQJci9Pe6klZmWnFFLzeg
+refresh_token: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJqYWh5dW5uaW5lQGdtYWlsLmNvbSIsImV4cCI6MTY1OTE1OTQxNn0.y0RaPM2TwY4Nm0QROK5U2Bwadeu3lkNnDFCDt7gKwOjXqIacLWer6y-66HUHQ15wZW4Od_1Od7jVr9x2u6BYkw
 ###
 
-POST http://localhost:8080/logout
-Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJqYWh5dW5uaW5lQGdtYWlsLmNvbSIsImV4cCI6MTY1ODgxMDc3NX0.P9px04UVIV1HpeFIPqv5G4YjWYoPd5lzEZqvwimJNIpyM52uOTiHwima4ezsqtpiL1u9VjLNC3H8Iwo_IWt0Vw
-refresh_token: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJqYWh5dW5uaW5lQGdtYWlsLmNvbSIsImV4cCI6MTY1OTA2Mzk3NX0.tTFCqn6J8Knplfmfm1W0hfy9nqOzvdLcnzoFoQ2tKngcFl-ERE6W3Er7SdN4xKo1fI29Af1BLv-KndMAjxGDXw
+POST http://13.125.106.21:8080/logout
+Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJqYWh5dW5uaW5lQGdtYWlsLmNvbSIsImV4cCI6MTY1ODkwNTg4Nn0.dA43g25nX1-W5TIP5qvNPeoaAq8KCKlx3qrUY2w9aCoUTV9llGLHjna9SUrGDBLOmlhZoO5Kr90yKqWk8Ed2sg
+refresh_token: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJqYWh5dW5uaW5lQGdtYWlsLmNvbSIsImV4cCI6MTY1OTE1OTA4Nn0.Gt4fTh93Ei41FO1pZdS5TOnmL9ILJrS4TsxbiiC_Om1Ru7Yoqx6l-H8KRdgEKNRgxd6RV0Xau6kvdFn8Sdf7hg

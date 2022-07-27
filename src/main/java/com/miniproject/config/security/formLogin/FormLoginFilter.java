@@ -28,7 +28,7 @@ public class FormLoginFilter extends UsernamePasswordAuthenticationFilter {
     private ObjectMapper objectMapper = new ObjectMapper();
 
     public FormLoginFilter(AuthenticationManager authenticationManager, JWTUtil jwtUtil) {
-        super(authenticationManager);
+        super();
         this.jwtUtil = jwtUtil;
     }
 
