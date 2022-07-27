@@ -7,8 +7,6 @@ import com.miniproject.post.repository.PostRepository;
 import com.miniproject.user.domain.User;
 import com.miniproject.user.repository.UserRepository;
 import java.io.IOException;
-import java.util.Objects;
-
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -72,19 +70,15 @@ public class PostService {
         }
     }
 
-    public void deletePost(Long id, Long username) {
-        Long writerId = postRepository.findById(id).orElseThrow(
-              () -> new IllegalArgumentException("게시글이 존재하지 않습니다.")).getUser().getId();
-        if (Objects.equals(writerId, username)) {
-            postRepository.deleteById(id);
-        }
+    public void deletePost(Long id, Long userId) {
+        Post post = postRepository.findById(id).orElseThrow(
+              () -> new IllegalArgumentException("게시글이 존재하지 않습니다."));
 
-        if (postRepository.findById(id).isPresent()) {
-            postRepository.deleteById(id);
+        if (post.getUser().getId().equals(userId)) {
+            postRepository.delete(post);
         } else {
-            throw new IllegalArgumentException("존재하지 않는 게시글입니다.");
+            throw new IllegalArgumentException("권한이 없습니다.");
         }
-
     }
 
 

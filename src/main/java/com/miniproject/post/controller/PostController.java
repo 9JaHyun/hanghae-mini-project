@@ -61,12 +61,13 @@ public class PostController {
     }
 
     @DeleteMapping("posts/{id}")
-    public Long deletePost(@PathVariable Long id,
+    public ResponseEntity<Void> deletePost(@PathVariable Long id,
           @AuthenticationPrincipal UserDetailsImpl userDetails) {
         if (userDetails != null) {
             Long username = userDetails.getUser().getId();
             postService.deletePost(id, username);
         }
-        return id;
+        return ResponseEntity.status(HttpStatus.OK)
+              .body(null);
     }
 }
