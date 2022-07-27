@@ -1,4 +1,4 @@
-package com.miniproject.user.service;
+package com.miniproject.user.dto;
 
 import com.miniproject.user.domain.User;
 import lombok.Getter;

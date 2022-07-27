@@ -1,14 +1,12 @@
 package com.miniproject.post.service;
 
-import com.amazonaws.services.s3.AmazonS3Client;
+import com.miniproject.post.domain.Post;
 import com.miniproject.post.dto.PostRequestDto;
 import com.miniproject.post.dto.PostResponseDto;
-import com.miniproject.post.model.Image;
-import com.miniproject.post.model.Post;
-import com.miniproject.post.repository.ImageRepository;
 import com.miniproject.post.repository.PostRepository;
 import com.miniproject.user.domain.User;
 import com.miniproject.user.repository.UserRepository;
+import java.io.IOException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -16,9 +14,6 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
-
-import java.io.IOException;
 
 @Service
 @RequiredArgsConstructor
@@ -28,35 +23,26 @@ public class PostService {
 
     private final PostRepository postRepository;
     private final UserRepository userRepository;
-    private final AmazonS3Client amazonS3Client;
-
     private final S3Uploader s3Uploader;
-    private final ImageRepository imageRepository;
 
     @Value("${cloud.aws.s3.bucket}")
     private String bucket;
 
     @Transactional
-    public void createPost(String username, PostRequestDto requestDto, MultipartFile multipartFile) throws IOException {
+    public void createPost(String username, PostRequestDto requestDto) throws IOException {
         User user = userRepository.findByUsername(username)
               .orElseThrow(() -> new UsernameNotFoundException("없는 회원입니다."));
 
-        Image uploadImage = s3Uploader.upload(multipartFile, "static");
-
+        String uploadImageUrl = s3Uploader.upload(requestDto.getData(), "static");
 
         Post post = Post.builder()
               .user(user)
               .contents(requestDto.getContents())
-              .imageFileName(requestDto.getImageFileName())
               .lat(requestDto.getLat())
               .lng(requestDto.getLng())
+              .imageFileName(uploadImageUrl)
               .address(requestDto.getAddress())
               .build();
-
-        uploadImage.setPost(post);
-        // TODO 사진 저장 로직 추가
-
-        imageRepository.save(uploadImage);
 
         postRepository.save(post);
     }

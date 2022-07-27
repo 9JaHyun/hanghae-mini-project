@@ -14,8 +14,8 @@ POST http://13.125.106.21:8080/login
 Content-Type: application/json
 
 {
-  "username": "jahyunnine@gmail.com",
-  "password": "qwe123!!"
+  "username": "hyunoh.jo@gmail.com",
+  "password": "q2w3e4r!"
 }
 ###
 GET http://13.125.106.21:8080/user/info

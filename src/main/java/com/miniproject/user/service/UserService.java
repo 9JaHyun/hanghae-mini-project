@@ -1,10 +1,11 @@
 package com.miniproject.user.service;
 
 import com.miniproject.user.dto.SignUpRequestDto;
+import com.miniproject.user.dto.UserInfoDto;
 
 public interface UserService {
 
-    void signUp(SignUpRequestDto dto);
+    void signUp(String email, SignUpRequestDto dto);
 
     UserInfoDto sendUserInfo(String username);
 

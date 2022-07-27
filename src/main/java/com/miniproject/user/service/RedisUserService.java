@@ -2,9 +2,11 @@ package com.miniproject.user.service;
 
 import com.miniproject.email.EmailUtil;
 import com.miniproject.email.SignUpEmail;
+import com.miniproject.post.service.S3Uploader;
 import com.miniproject.user.domain.User;
 import com.miniproject.user.domain.UserStatus;
 import com.miniproject.user.dto.SignUpRequestDto;
+import com.miniproject.user.dto.UserInfoDto;
 import com.miniproject.user.repository.UserRepository;
 import java.util.Optional;
 import java.util.UUID;
@@ -12,7 +14,6 @@ import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Primary;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -22,34 +23,47 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
 @Service
-@Primary
 @Transactional(readOnly = true)
-public class RedisUserService implements UserService{
+public class RedisUserService implements UserService {
 
     private final RedisTemplate<String, Object> redisTemplate;
     private final UserRepository userRepository;
     private final EmailUtil emailUtil;
     private final PasswordEncoder passwordEncoder;
-    @Value("${email.expired-time}") private String emailExpiredTime;
+    private final S3Uploader s3Uploader;
     private static final Pattern PASSWORD_PATTERN = Pattern.compile(
           "^(?=.*[A-Za-z])(?=.*\\d)(?=.*[$@$!%*#?&])[A-Za-z\\d$@$!%*#?&]{8,}$");
 
-    public RedisUserService(RedisTemplate<String, Object> redisTemplate, UserRepository userRepository, EmailUtil emailUtil,
-          PasswordEncoder passwordEncoder) {
+    @Value("${email.expired-time}")
+    private String emailExpiredTime;
+
+    public RedisUserService(RedisTemplate<String, Object> redisTemplate,
+          UserRepository userRepository, EmailUtil emailUtil,
+          PasswordEncoder passwordEncoder, S3Uploader s3Uploader) {
         this.redisTemplate = redisTemplate;
         this.userRepository = userRepository;
         this.emailUtil = emailUtil;
         this.passwordEncoder = passwordEncoder;
+        this.s3Uploader = s3Uploader;
     }
 
     @Override
     @Transactional
-    public void signUp(SignUpRequestDto dto) {
+    public void signUp(String domainURL, SignUpRequestDto dto) {
         validateUsername(dto.getUsername());
         validatePassword(dto);
         validateDuplicateNickname(dto.getNickname());
+
         User user = dto.toEntity();
         user.setPassword(passwordEncoder.encode(dto.getPassword()));
+
+        if (dto.getProfile() != null) {
+            String profileUrl = s3Uploader.upload(dto.getProfile(), "profile");
+            user.setProfile(profileUrl);
+        }
+
+        createCertificationCode(dto.getUsername(), domainURL);
+
         userRepository.save(user);
     }
 
@@ -70,11 +84,12 @@ public class RedisUserService implements UserService{
 
     @Override
     public void createCertificationCode(String email, String url) {
+        ValueOperations<String, Object> operations = redisTemplate.opsForValue();
         String certificationCode = UUID.randomUUID().toString();
         log.info(url);
         emailUtil.sendEmail(email, new SignUpEmail(certificationCode, url, email, certificationCode));
 
-        redisTemplate.opsForValue().set(email, certificationCode);
+        operations.set(email, certificationCode);
         redisTemplate.expire(email, Long.parseLong(emailExpiredTime), TimeUnit.MILLISECONDS);
     }
 
@@ -120,6 +135,4 @@ public class RedisUserService implements UserService{
             throw new IllegalArgumentException("중복되는 닉네임입니다.");
         }
     }
-
-
 }
