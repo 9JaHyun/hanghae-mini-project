@@ -12,7 +12,9 @@ import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Primary;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -20,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
 @Service
+@Primary
 @Transactional(readOnly = true)
 public class RedisUserService implements UserService{
 
@@ -78,13 +81,16 @@ public class RedisUserService implements UserService{
     @Override
     @Transactional
     public void verityEmail(String email, String authKey) {
-        String keyInRedis = (String) redisTemplate.opsForValue().get(email);
+        ValueOperations<String, Object> operations = redisTemplate.opsForValue();
+        String keyInRedis = (String) operations.get(email);
         if (!(keyInRedis != null && keyInRedis.equals(authKey))) {
             throw new IllegalArgumentException("만료되었거나 유효하지 않는 인증 링크입니다.");
         }
 
         User user = userRepository.findByUsername(email)
               .orElseThrow(() -> new UsernameNotFoundException("없는 회원입니다."));
+
+        redisTemplate.delete(email);
 
         log.info("user valid! -> {}", user.getUsername());
         user.changeStatus(UserStatus.VALID);

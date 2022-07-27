@@ -9,6 +9,7 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import java.util.Date;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Primary;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Component;
@@ -16,7 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
 @Component
-//@Primary
+@Primary
 public class RedisJWTUtil implements JWTUtil{
 
     private final String SECRET_KEY;
