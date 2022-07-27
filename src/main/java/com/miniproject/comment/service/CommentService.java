@@ -41,15 +41,14 @@ public class CommentService {
 
 
     public void deleteComment(Long commentId, UserDetailsImpl userDetails) {
-
         Comment comment = commentRepository.findById(commentId).orElseThrow(
-                () -> new IllegalArgumentException("해당 댓글이 존재하지 않습니다.")
-        );
+                () -> new IllegalArgumentException("해당하는 게시글을 찾을 수 없습니다."));
 
-        if(userDetails.getUser().getId().equals(comment.getCommentId())) {
-            commentRepository.delete(comment);
+        if(userDetails.getUser().getId().equals(comment.getUser().getId())) {
+            commentRepository.deleteById(commentId);
+        }else {
+            throw new IllegalArgumentException("댓글 삭제할 권한이 없습니다");
         }
-
     }
 
 

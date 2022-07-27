@@ -50,7 +50,7 @@ public class CommentController {
     public ResponseEntity<Long> deleteComment(@PathVariable Long commentId
           , @AuthenticationPrincipal UserDetailsImpl userDetails) {
         commentService.deleteComment(commentId,userDetails);
-        return ResponseEntity.status(HttpStatus.CREATED)
+        return ResponseEntity.status(HttpStatus.OK)
                 .body(null);
     }
 
