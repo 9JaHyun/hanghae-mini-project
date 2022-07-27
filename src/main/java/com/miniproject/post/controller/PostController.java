@@ -29,12 +29,12 @@ public class PostController {
     // 게시글 작성
     @PostMapping("/posts")
     public ResponseEntity<Void> createPost(PostRequestDto requestDto,
-                                           @AuthenticationPrincipal UserDetails userDetails) throws IOException {
+          @AuthenticationPrincipal UserDetails userDetails) throws IOException {
 
         postService.createPost(userDetails.getUsername(), requestDto);
 
-        return ResponseEntity.status(HttpStatus.OK)
-                .body(null);
+        return ResponseEntity.status(HttpStatus.CREATED)
+              .body(null);
     }
 
     // 개별 게시글 상세 조회
@@ -43,34 +43,31 @@ public class PostController {
         PostResponseDto dto = postService.findById(id);
 
         return ResponseEntity.status(HttpStatus.OK)
-                .contentType(MediaType.APPLICATION_JSON)
-                .body(dto);
+              .contentType(MediaType.APPLICATION_JSON)
+              .body(dto);
     }
 
     // 게시글 수정
     @PutMapping("/posts/{id}")
-    public Long updatePost(@PathVariable Long id, @RequestBody PostRequestDto requestDto) {
-        return postService.updatePost(id, requestDto);
+    public ResponseEntity<Long> updatePost(@PathVariable Long id, @RequestBody PostRequestDto requestDto,
+          @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        if (userDetails != null) {
+            Long modifiedId = postService.updatePost(id, requestDto, userDetails.getUser().getId());
+            return ResponseEntity.status(HttpStatus.OK)
+                  .body(modifiedId);
+        } else {
+            throw new IllegalArgumentException("권한이 없습니다.");
+        }
     }
 
-
-
-
-    // 게시글 삭제
-//    @DeleteMapping("posts/{id}")
-//    public Long deletePost(@PathVariable Long id) {
-//        postService.deletePost(id);
-//        return id;
-//    }
-
-    // 게시글 삭제 (jwt 적용)
     @DeleteMapping("posts/{id}")
-    public Long deletePost(@PathVariable Long id, @AuthenticationPrincipal UserDetailsImpl userDetails
-    ) {
+    public ResponseEntity<Void> deletePost(@PathVariable Long id,
+          @AuthenticationPrincipal UserDetailsImpl userDetails) {
         if (userDetails != null) {
             Long username = userDetails.getUser().getId();
             postService.deletePost(id, username);
         }
-        return id;
+        return ResponseEntity.status(HttpStatus.OK)
+              .body(null);
     }
 }
