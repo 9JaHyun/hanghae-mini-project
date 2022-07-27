@@ -66,7 +66,7 @@ public class PostService {
             post.update(requestDto);
             return post.getId();
         } else {
-            throw new IllegalArgumentException("권한이 없습니다.");
+            throw new IllegalArgumentException("수정 권한이 없습니다.");
         }
     }
 
@@ -77,7 +77,7 @@ public class PostService {
         if (post.getUser().getId().equals(userId)) {
             postRepository.delete(post);
         } else {
-            throw new IllegalArgumentException("권한이 없습니다.");
+            throw new IllegalArgumentException("삭제 권한이 없습니다.");
         }
     }
 
