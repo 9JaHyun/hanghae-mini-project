@@ -25,12 +25,12 @@ public class PostListController {
     // 최초 메인페이지 컨트롤러
     @GetMapping("/posts")
     // sort = "id", direction = Sort.Direction.DESC 아이디로 내림차순 정렬
-    public ResponseEntity<List<PostResponseDto>> firstMainList(@RequestParam(defaultValue = ""+Long.MAX_VALUE) Long lastPostId,
-            @PageableDefault(sort = "id", direction = Sort.Direction.DESC, size = DEFAULT_PAGE_SIZE) Pageable pageable) {
-        // 응답 list 객체 생성
-        List<PostResponseDto> result = postListService.mainInfinity(lastPostId, pageable)
-              .map(PostResponseDto::new)
-              .toList();
+    public ResponseEntity<List<PostResponseDto>> firstMainList(
+          @RequestParam(defaultValue = "" + Long.MAX_VALUE) Long lastPostId,
+          @PageableDefault(sort = "id", direction = Sort.Direction.DESC, size = DEFAULT_PAGE_SIZE)
+          Pageable pageable) {
+
+        List<PostResponseDto> result = postListService.mainInfinity(lastPostId, pageable);
         return ResponseEntity.status(HttpStatus.OK)
               .body(result);
     }

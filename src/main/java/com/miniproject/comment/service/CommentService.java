@@ -34,9 +34,8 @@ public class CommentService {
               .orElseThrow(() -> new UsernameNotFoundException("다시 로그인해 주세요."));
 
         String content = commentRequestDto.getContent();
-        Comment savecomment = Comment.createComment(user, content, post);
 
-        commentRepository.save(savecomment);
+        commentRepository.save(Comment.createComment(user, content, post));
     }
 
 

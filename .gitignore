@@ -14,5 +14,5 @@ out/
 !src/main/resources/application-DEV.yaml
 src/main/resources/application-**.yaml
 
-##
-application-aws.yml
+# log
+logs/

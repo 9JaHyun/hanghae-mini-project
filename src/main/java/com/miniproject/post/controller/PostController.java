@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 
@@ -49,7 +48,8 @@ public class PostController {
 
     // 게시글 수정
     @PutMapping("/posts/{id}")
-    public ResponseEntity<Long> updatePost(@PathVariable Long id, @RequestBody PostRequestDto requestDto,
+    public ResponseEntity<Long> updatePost(@PathVariable Long id,
+          PostRequestDto requestDto,
           @AuthenticationPrincipal UserDetailsImpl userDetails) {
         if (userDetails != null) {
             Long modifiedId = postService.updatePost(id, requestDto, userDetails.getUser().getId());

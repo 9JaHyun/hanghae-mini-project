@@ -9,11 +9,11 @@ import com.miniproject.user.repository.UserRepository;
 import java.io.IOException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 @Service
 @RequiredArgsConstructor
@@ -24,16 +24,14 @@ public class PostService {
     private final PostRepository postRepository;
     private final UserRepository userRepository;
     private final S3Uploader s3Uploader;
-
-    @Value("${cloud.aws.s3.bucket}")
-    private String bucket;
+    private final String POST_IMAGE_DIR = "static";
 
     @Transactional
     public void createPost(String username, PostRequestDto requestDto) throws IOException {
         User user = userRepository.findByUsername(username)
               .orElseThrow(() -> new UsernameNotFoundException("없는 회원입니다."));
 
-        String uploadImageUrl = s3Uploader.upload(requestDto.getData(), "static");
+        String uploadImageUrl = s3Uploader.upload(requestDto.getData(), POST_IMAGE_DIR);
 
         Post post = Post.builder()
               .user(user)
@@ -64,6 +62,11 @@ public class PostService {
 
         if (post.getUser().getId().equals(userId)) {
             post.update(requestDto);
+            MultipartFile image = requestDto.getData();
+            if (image != null) {
+                String uploadImageUrl = s3Uploader.upload(image, POST_IMAGE_DIR);
+                post.setImageFileName(uploadImageUrl);
+            }
             return post.getId();
         } else {
             throw new IllegalArgumentException("수정 권한이 없습니다.");
