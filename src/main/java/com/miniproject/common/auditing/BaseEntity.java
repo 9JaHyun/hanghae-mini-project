@@ -1,4 +1,4 @@
-package com.miniproject.common;
+package com.miniproject.common.auditing;
 
 import java.time.LocalDateTime;
 import javax.persistence.Column;
@@ -21,8 +21,8 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 public abstract class BaseEntity {
 
     @Column(updatable = false) @CreatedDate private LocalDateTime createdAt;
-    @Column(updatable = false) @CreatedBy private String createdBy;
+    @Column(updatable = false) @CreatedBy private Long createdBy;
     @Column(insertable = false) @LastModifiedDate private LocalDateTime updatedAt;
-    @Column(insertable = false) @LastModifiedBy private String updatedBy;
+    @Column(insertable = false) @LastModifiedBy private Long updatedBy;
 
 }

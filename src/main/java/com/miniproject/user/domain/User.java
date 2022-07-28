@@ -1,7 +1,7 @@
 package com.miniproject.user.domain;
 
 
-import com.miniproject.common.BaseEntity;
+import com.miniproject.common.auditing.BaseEntity;
 import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -15,6 +15,7 @@ import javax.persistence.Index;
 import javax.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.DynamicUpdate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 @Getter
@@ -23,6 +24,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
       @Index(columnList = "username"),
       @Index(columnList = "nickname")
 })
+@DynamicUpdate
 @Entity
 public class User extends BaseEntity {
 

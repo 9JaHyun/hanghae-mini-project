@@ -1,6 +1,6 @@
 package com.miniproject.comment.domain;
 
-import com.miniproject.common.BaseEntity;
+import com.miniproject.common.auditing.BaseEntity;
 import com.miniproject.post.domain.Post;
 import com.miniproject.user.domain.User;
 import javax.persistence.Column;
@@ -14,10 +14,12 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.DynamicUpdate;
 
 @Getter
 @Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@DynamicUpdate
 @Entity
 public class Comment extends BaseEntity {
 

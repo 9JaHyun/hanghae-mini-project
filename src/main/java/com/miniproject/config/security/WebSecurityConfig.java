@@ -68,8 +68,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        FormLoginFilter formLoginFilter = new FormLoginFilter(authenticationManager(),
-              redisJwtUtil);
+        FormLoginFilter formLoginFilter = new FormLoginFilter(authenticationManager(), redisJwtUtil);
         JwtCheckFilter jwtCheckFilter = new JwtCheckFilter(authenticationManager(), loginService,
               redisTemplate, redisJwtUtil);
         http.csrf().disable();

@@ -1,7 +1,7 @@
 package com.miniproject.post.domain;
 
 import com.miniproject.comment.domain.Comment;
-import com.miniproject.common.BaseEntity;
+import com.miniproject.common.auditing.BaseEntity;
 import com.miniproject.post.dto.PostRequestDto;
 import com.miniproject.user.domain.User;
 import java.util.ArrayList;
