@@ -14,8 +14,4 @@ public interface UserService {
     void createCertificationCode(String email, String url);
 
     void verityEmail(String email, String authKey);
-
-    void validateUsername(String username);
-
-    void validateDuplicateNickname(String nickname);
 }

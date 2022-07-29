@@ -107,6 +107,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.addAllowedOriginPattern("*");
+//        configuration.addAllowedOriginPattern("http://sparta-dhh.shop.s3-website.ap-northeast-2.amazonaws.com/");
+//        configuration.addAllowedOriginPattern("http://13.125.106.21:8080");
         configuration.setAllowedMethods(Arrays.asList("HEAD", "GET", "POST", "PUT", "DELETE"));
         configuration.addAllowedHeader("*");
         configuration.addExposedHeader("*");

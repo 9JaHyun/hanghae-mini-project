@@ -29,6 +29,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
               .allowedOriginPatterns("*")
+//              .allowedOriginPatterns("http://sparta-dhh.shop.s3-website.ap-northeast-2.amazonaws.com/", "http://13.125.106.21:8080")
               .allowedMethods("*")
               .allowedHeaders("*")
               .exposedHeaders("*")

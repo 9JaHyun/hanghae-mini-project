@@ -13,4 +13,4 @@ refresh_token: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJqYWh5dW5uaW5lQGdtYWlsLmNvb
 }
 
 ###
-GET http://13.125.106.21:8080/posts/1
+GET http://13.125.106.21:8080/posts

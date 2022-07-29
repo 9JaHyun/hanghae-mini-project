@@ -111,8 +111,7 @@ public class RedisUserService implements UserService {
         user.changeStatus(UserStatus.VALID);
     }
 
-    @Override
-    public void validateUsername(String username) {
+    private void validateUsername(String username) {
         Optional<User> user = userRepository.findByUsername(username);
         if (user.isPresent()) {
             throw new IllegalArgumentException("이미 존재하는 계정입니다.");
@@ -128,8 +127,7 @@ public class RedisUserService implements UserService {
         }
     }
 
-    @Override
-    public void validateDuplicateNickname(String nickname) {
+    private void validateDuplicateNickname(String nickname) {
         Optional<User> user = userRepository.findByNickname(nickname);
         if (user.isPresent()) {
             throw new IllegalArgumentException("중복되는 닉네임입니다.");

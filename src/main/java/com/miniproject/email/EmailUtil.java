@@ -22,19 +22,10 @@ public class EmailUtil {
     @Value("${email.password}")
     private String HOST_PASSWORD;
 
-
-    public void sendEmail(String toEmail, SendingEmailFuc sendingEmailFuc) {
+    public void sendEmail(String toEmail, SendingEmailStrategy sendingEmailStrategy) {
         log.info("sending email to {}", toEmail);
 
-        // Mail Server 설정
-        String charSet = "utf-8";
         String hostSMTP = "smtp.gmail.com";
-
-        // 보내는 사람 EMail, 제목, 내용
-        String fromEmail = HOST_USERNAME;
-        String fromName = "혜림스 포토존";
-        String subject = "";
-        String msg = "";
 
         Properties props = new Properties();
         props.put("mail.smtp.host", hostSMTP);
@@ -54,7 +45,7 @@ public class EmailUtil {
             message.setFrom(new InternetAddress(HOST_USERNAME));
             message.setRecipient(Message.RecipientType.TO, new InternetAddress(toEmail));
 
-            sendingEmailFuc.fillMessage(message);
+            sendingEmailStrategy.fillMessage(message);
 
             // send the message
             Transport.send(message);
